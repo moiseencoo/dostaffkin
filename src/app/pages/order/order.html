@@ -6,18 +6,18 @@
         <div class="main-text">Выберите параметры для расчета отправления</div>
     </div>
     <div class="main-content">
-        <div class="main-route">
+        <div class="main-route" [formGroup]="routeForm">
             <div class="main-block-title">Маршрут</div>
             <div class="main-fields">
                 <div class="main-field" id="fromField">
                     <div class="main-pin"></div>
-                    <input id="from" placeholder="Откуда: начните вводить адрес" autocomplete="off" />
+                    <input id="from" formControlName="from" placeholder="Откуда: начните вводить адрес" autocomplete="off" />
                     <div class="main-ac" id="fromAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
 
                 <div class="main-field" id="toField">
                     <div class="main-pin"></div>
-                    <input id="to" placeholder="Куда: начните вводить адрес" autocomplete="off" />
+                    <input id="to" formControlName="to" placeholder="Куда: начните вводить адрес" autocomplete="off" />
                     <div class="main-ac" id="toAc" role="listbox" aria-label="Подсказки адресов"></div>
                 </div>
             </div>
@@ -58,7 +58,7 @@
         </div>
 
         <div class="main-calculate-block">
-            <button id="calc" class="button calculate-button" type="button" [disabled]="!(routeForm.value.from && routeForm.value.to)">
+            <button id="calc" class="button calculate-button" type="button" [disabled]="routeForm.invalid" (click)="calculate()">
                 Рассчитать
             </button>
         </div>
@@ -92,35 +92,35 @@
         </div>
 
         <div class="main-order-box">
-            <div class="main-order-form" id="orderForm">
+            <div class="main-order-form" id="orderForm" [formGroup]="orderForm" [style.display]="orderId() ? 'none' : null">
                 <div class="main-order-title">Оформление доставки</div>
                 <div class="main-block-info-row">
                     <div class="main-block-title">Контакты</div>
                     <div class="order-fields">
                         <div class="main-field">
-                            <input id="customerName" placeholder="Ваше имя" autocomplete="off" />
+                            <input id="customerName" formControlName="name" placeholder="Ваше имя" autocomplete="off" />
                         </div>
                         <div class="main-field">
-                            <input id="customerPhone" placeholder="Ваш телефон" autocomplete="off" inputmode="tel" />
+                            <input id="customerPhone" formControlName="phone" placeholder="Ваш телефон" autocomplete="off" inputmode="tel" />
                         </div>
                     </div>
                 </div>
                 <div class="main-block-info-row extra-info">
                     <div class="main-block-title">Дополнительная информация</div>
                     <div class="main-field textarea">
-                        <textarea id="comment" placeholder="Детали доставки и комментарии"></textarea>
+                        <textarea id="comment" formControlName="comment" placeholder="Детали доставки и комментарии"></textarea>
                     </div>
                 </div>
-                <button id="submit" class="button main-submit-request" type="button" disabled>
+                <button id="submit" class="button main-submit-request" type="button" [disabled]="!calculationResult() || routeForm.invalid" (click)="submitOrder()">
                     Отправить заявку
                 </button>
             </div>
 
-            <div class="main-order-success" id="orderSuccess">
+            <div class="main-order-success" id="orderSuccess" [class.is-visible]="orderId()">
                 <div class="main-success-icon">✓</div>
                 <div class="main-success-title">Заявка отправлена!</div>
                 <div class="main-success-title">
-                    Номер отправления – <span id="orderId"></span>
+                    Номер отправления – <span id="orderId">{{ orderId() }}</span>
                 </div>
                 <div class="main-success-subtitle">Мы скоро свяжемся с вами</div>
             </div>
